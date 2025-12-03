@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="it" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Federico Ferrulli - Portfolio</title>
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Vue 3 -->
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+        <!-- Lucide Icons -->
+        <script src="https://unpkg.com/lucide@latest"></script>
+
+        <!-- Google Fonts: Inter -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ["Inter", "sans-serif"],
+                        },
+                        colors: {
+                            google: {
+                                blue: "#4285F4",
+                                red: "#DB4437",
+                                yellow: "#F4B400",
+                                green: "#0F9D58",
+                                dark: "#202124",
+                                gray: "#5f6368",
+                            },
+                        },
+                    },
+                },
+            };
+        </script>
+
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+            }
+            .code-cursor::after {
+                content: "|";
+                animation: blink 1s step-start infinite;
+            }
+            @keyframes blink {
+                50% {
+                    opacity: 0;
+                }
+            }
+
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+            .dark ::-webkit-scrollbar-track {
+                background: #2d2d2d;
+            }
+            .dark ::-webkit-scrollbar-thumb {
+                background: #555;
+            }
+        </style>
+    </head>
+    <body
+        class="bg-gray-50 text-gray-900 dark:bg-[#202124] dark:text-gray-100 transition-colors duration-300"
+    >
+        <div id="app" class="min-h-screen flex flex-col">
+            <!-- Navigation -->
+            <nav
+                class="fixed w-full z-50 bg-white/80 dark:bg-[#202124]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700"
+            >
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex-shrink-0 flex items-center">
+                            <span
+                                class="font-bold text-xl tracking-tight text-gray-900 dark:text-white"
+                            >
+                                &lt;Federico<span class="text-google-blue"
+                                    >Ferrulli</span
+                                >/&gt;
+                            </span>
+                        </div>
+
+                        <!-- Desktop Menu -->
+                        <div class="hidden md:flex space-x-8 items-center">
+                            <a
+                                v-for="item in navItems"
+                                :key="item.name"
+                                :href="item.href"
+                                class="text-sm font-medium hover:text-google-blue transition-colors dark:text-gray-300 dark:hover:text-google-blue"
+                            >
+                                {{ item.name }}
+                            </a>
+                            <button
+                                @click="toggleTheme"
+                                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            >
+                                <i
+                                    data-lucide="moon"
+                                    v-if="!isDark"
+                                    class="w-5 h-5 text-gray-600"
+                                ></i>
+                                <i
+                                    data-lucide="sun"
+                                    v-else
+                                    class="w-5 h-5 text-yellow-400"
+                                ></i>
+                            </button>
+                        </div>
+
+                        <!-- Mobile Button -->
+                        <div class="md:hidden flex items-center">
+                            <button
+                                @click="mobileMenuOpen = !mobileMenuOpen"
+                                class="p-2"
+                            >
+                                <i
+                                    data-lucide="menu"
+                                    class="w-6 h-6 dark:text-white"
+                                ></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu -->
+                <div
+                    v-show="mobileMenuOpen"
+                    class="md:hidden bg-white dark:bg-[#202124] border-b border-gray-200 dark:border-gray-700"
+                >
+                    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <a
+                            v-for="item in navItems"
+                            :key="item.name"
+                            :href="item.href"
+                            @click="mobileMenuOpen = false"
+                            class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-800"
+                        >
+                            {{ item.name }}
+                        </a>
+                        <button
+                            @click="toggleTheme"
+                            class="w-full text-left px-3 py-2 text-base font-medium flex items-center"
+                        >
+                            <span class="mr-2"
+                                >{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span
+                            >
+                            <i
+                                :data-lucide="isDark ? 'sun' : 'moon'"
+                                class="w-4 h-4"
+                            ></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <header
+                id="home"
+                class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center"
+            >
+                <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                    <div
+                        class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-google-blue uppercase bg-blue-50 dark:bg-blue-900/30 rounded-full"
+                    >
+                        Software Developer
+                    </div>
+                    <h1
+                        class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4"
+                    >
+                        Costruisco backend <br />
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-google-blue to-purple-600"
+                        >
+                            scalabili e sicuri.
+                        </span>
+                    </h1>
+                    <p
+                        class="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-lg mx-auto md:mx-0"
+                    >
+                        Sviluppatore Full Stack specializzato in Node.js, Vue.js
+                        e architetture IoT. Trasformo requisiti complessi in
+                        codice pulito ed efficiente.
+                    </p>
+                    <div
+                        class="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+                    >
+                        <a
+                            href="#projects"
+                            class="px-8 py-3 rounded-lg bg-google-blue text-white font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-blue-500/30"
+                        >
+                            Vedi Esperienza
+                        </a>
+                        <a
+                            href="#contact"
+                            class="px-8 py-3 rounded-lg border border-gray-300 dark:border-gray-600 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                        >
+                            Contattami
+                        </a>
+                    </div>
+                    <div
+                        class="mt-8 flex items-center justify-center md:justify-start space-x-4 text-gray-500"
+                    >
+                        <a
+                            :href="cvData.social.linkedin"
+                            target="_blank"
+                            class="hover:text-google-blue transition-colors"
+                        >
+                            <i data-lucide="linkedin" class="w-6 h-6"></i>
+                        </a>
+                        <a
+                            :href="'mailto:' + cvData.email"
+                            class="hover:text-google-red transition-colors"
+                        >
+                            <i data-lucide="mail" class="w-6 h-6"></i>
+                        </a>
+                        <a
+                            href="#"
+                            class="hover:text-gray-900 dark:hover:text-white transition-colors"
+                        >
+                            <i data-lucide="github" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Code Window Visual -->
+                <div class="md:w-1/2 w-full pl-0 md:pl-10">
+                    <div
+                        class="rounded-xl overflow-hidden bg-[#282a36] shadow-2xl border border-gray-700 font-mono text-sm relative"
+                    >
+                        <div
+                            class="flex items-center px-4 py-2 bg-[#21222c] border-b border-gray-700"
+                        >
+                            <div class="flex space-x-2">
+                                <div
+                                    class="w-3 h-3 rounded-full bg-red-500"
+                                ></div>
+                                <div
+                                    class="w-3 h-3 rounded-full bg-yellow-500"
+                                ></div>
+                                <div
+                                    class="w-3 h-3 rounded-full bg-green-500"
+                                ></div>
+                            </div>
+                            <div class="ml-4 text-gray-400 text-xs">
+                                developer.js
+                            </div>
+                        </div>
+                        <div class="p-6 text-gray-300 overflow-x-auto">
+                            <p>
+                                <span class="text-pink-500">const</span>
+                                <span class="text-green-400">me</span> = {
+                            </p>
+                            <p class="pl-4">
+                                name:
+                                <span class="text-yellow-300"
+                                    >'Federico Ferrulli'</span
+                                >,
+                            </p>
+                            <p class="pl-4">
+                                role:
+                                <span class="text-yellow-300"
+                                    >'Full Stack Dev'</span
+                                >,
+                            </p>
+                            <p class="pl-4">
+                                location:
+                                <span class="text-yellow-300">'Bari, IT'</span>,
+                            </p>
+                            <p class="pl-4">skills: [</p>
+                            <p class="pl-8">
+                                <span class="text-yellow-300">'VueJS'</span>,
+                                <span class="text-yellow-300">'NodeJS'</span>,
+                            </p>
+                            <p class="pl-8">
+                                <span class="text-yellow-300">'IoT'</span>,
+                                <span class="text-yellow-300"
+                                    >'Team Leadership'</span
+                                >
+                            </p>
+                            <p class="pl-4">],</p>
+                            <p class="pl-4">
+                                ambition:
+                                <span class="text-yellow-300">'Google'</span>
+                            </p>
+                            <p>};</p>
+                            <p class="mt-4">
+                                <span class="text-purple-400">me</span>.<span
+                                    class="text-blue-400"
+                                    >buildFuture</span
+                                >();<span class="code-cursor"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tech Stack Section -->
+            <section id="skills" class="py-20 bg-white dark:bg-[#202124]">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2
+                            class="text-3xl font-bold text-gray-900 dark:text-white"
+                        >
+                            Stack Tecnologico
+                        </h2>
+                        <p class="mt-4 text-gray-500 dark:text-gray-400">
+                            Gli strumenti che utilizzo per creare soluzioni
+                            performanti.
+                        </p>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                    >
+                        <!-- Backend -->
+                        <div
+                            class="p-6 rounded-xl bg-gray-50 dark:bg-[#303134] hover:shadow-lg transition-shadow border border-transparent hover:border-google-blue/20"
+                        >
+                            <div
+                                class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4 text-google-blue"
+                            >
+                                <i data-lucide="server" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-lg font-bold mb-3 dark:text-white">
+                                Backend
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    v-for="skill in cvData.skills.backend"
+                                    class="px-2 py-1 text-xs rounded-md bg-white dark:bg-[#202124] border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                                >
+                                    {{ skill }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Frontend -->
+                        <div
+                            class="p-6 rounded-xl bg-gray-50 dark:bg-[#303134] hover:shadow-lg transition-shadow border border-transparent hover:border-google-green/20"
+                        >
+                            <div
+                                class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-google-green"
+                            >
+                                <i data-lucide="layout" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-lg font-bold mb-3 dark:text-white">
+                                Frontend
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    v-for="skill in cvData.skills.frontend"
+                                    class="px-2 py-1 text-xs rounded-md bg-white dark:bg-[#202124] border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                                >
+                                    {{ skill }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Database -->
+                        <div
+                            class="p-6 rounded-xl bg-gray-50 dark:bg-[#303134] hover:shadow-lg transition-shadow border border-transparent hover:border-google-yellow/20"
+                        >
+                            <div
+                                class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center mb-4 text-google-yellow"
+                            >
+                                <i data-lucide="database" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-lg font-bold mb-3 dark:text-white">
+                                Database
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    v-for="skill in cvData.skills.database"
+                                    class="px-2 py-1 text-xs rounded-md bg-white dark:bg-[#202124] border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                                >
+                                    {{ skill }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- DevOps -->
+                        <div
+                            class="p-6 rounded-xl bg-gray-50 dark:bg-[#303134] hover:shadow-lg transition-shadow border border-transparent hover:border-google-red/20"
+                        >
+                            <div
+                                class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-4 text-google-red"
+                            >
+                                <i data-lucide="terminal" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-lg font-bold mb-3 dark:text-white">
+                                DevOps & Tools
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    v-for="skill in cvData.skills.tools"
+                                    class="px-2 py-1 text-xs rounded-md bg-white dark:bg-[#202124] border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                                >
+                                    {{ skill }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience Section (Timeline) -->
+            <section id="experience" class="py-20 bg-gray-50 dark:bg-[#171717]">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2
+                            class="text-3xl font-bold text-gray-900 dark:text-white"
+                        >
+                            Percorso Professionale
+                        </h2>
+                    </div>
+
+                    <div
+                        class="relative border-l border-gray-200 dark:border-gray-700 ml-3 md:ml-0"
+                    >
+                        <div
+                            v-for="(job, index) in cvData.experience"
+                            :key="index"
+                            class="mb-10 ml-6 md:ml-0 md:pl-0"
+                        >
+                            <!-- Custom Timeline Item -->
+                            <div class="md:flex items-start group">
+                                <!-- Dot -->
+                                <div
+                                    class="absolute w-3 h-3 bg-google-blue rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 md:left-auto md:right-1/2 md:translate-x-1/2 md:mt-6"
+                                ></div>
+
+                                <!-- Date (Left on Desktop) -->
+                                <div
+                                    class="md:w-1/2 md:pr-12 md:text-right mb-2 md:mb-0"
+                                >
+                                    <span
+                                        class="text-sm font-semibold text-google-blue bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded inline-block mb-2 md:mb-0"
+                                    >
+                                        {{ job.period }}
+                                    </span>
+                                </div>
+
+                                <!-- Content (Right on Desktop) -->
+                                <div class="md:w-1/2 md:pl-12">
+                                    <div
+                                        class="p-6 bg-white dark:bg-[#202124] rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow"
+                                    >
+                                        <h3
+                                            class="flex items-center text-xl font-bold text-gray-900 dark:text-white"
+                                        >
+                                            {{ job.role }}
+                                        </h3>
+                                        <span
+                                            class="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-4"
+                                        >
+                                            @ {{ job.company }}
+                                        </span>
+                                        <ul class="space-y-2">
+                                            <li
+                                                v-for="(task, i) in job.tasks"
+                                                :key="i"
+                                                class="flex items-start text-gray-600 dark:text-gray-300 text-sm"
+                                            >
+                                                <i
+                                                    data-lucide="check-circle-2"
+                                                    class="w-4 h-4 text-google-green mr-2 mt-0.5 flex-shrink-0"
+                                                ></i>
+                                                <span>{{ task }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education Section -->
+            <section class="py-20 bg-white dark:bg-[#202124]">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-10">
+                        <h2
+                            class="text-3xl font-bold text-gray-900 dark:text-white"
+                        >
+                            Istruzione
+                        </h2>
+                    </div>
+                    <div
+                        class="bg-gray-50 dark:bg-[#303134] rounded-xl p-8 flex flex-col md:flex-row items-center md:justify-between border border-gray-100 dark:border-gray-700"
+                    >
+                        <div class="flex items-center mb-4 md:mb-0">
+                            <div
+                                class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center text-purple-600 mr-4"
+                            >
+                                <i
+                                    data-lucide="graduation-cap"
+                                    class="w-6 h-6"
+                                ></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold dark:text-white">
+                                    Perito Informatico
+                                </h3>
+                                <p class="text-gray-500 dark:text-gray-400">
+                                    IISS G. Marconi M.Hack
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="text-2xl font-bold text-google-blue"
+                                >100/100</span
+                            >
+                            <span class="text-sm text-gray-400"
+                                >Voto Finale</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-20 bg-gray-900 text-white">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl font-bold mb-6">
+                        Pronto a Collaborare?
+                    </h2>
+                    <p class="text-gray-400 mb-10 max-w-xl mx-auto">
+                        Sono sempre alla ricerca di nuove sfide tecniche, in
+                        particolare nello sviluppo di sistemi backend scalabili
+                        e architetture cloud.
+                    </p>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto"
+                    >
+                        <a
+                            :href="'mailto:' + cvData.email"
+                            class="flex items-center justify-center p-6 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors group"
+                        >
+                            <i
+                                data-lucide="mail"
+                                class="w-8 h-8 text-google-red mb-0 group-hover:scale-110 transition-transform mr-4"
+                            ></i>
+                            <div class="text-left">
+                                <span class="block text-xs text-gray-400"
+                                    >Email Me</span
+                                >
+                                <span class="font-medium"
+                                    >{{ cvData.email }}</span
+                                >
+                            </div>
+                        </a>
+
+                        <a
+                            :href="cvData.social.linkedin"
+                            target="_blank"
+                            class="flex items-center justify-center p-6 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors group"
+                        >
+                            <i
+                                data-lucide="linkedin"
+                                class="w-8 h-8 text-google-blue mb-0 group-hover:scale-110 transition-transform mr-4"
+                            ></i>
+                            <div class="text-left">
+                                <span class="block text-xs text-gray-400"
+                                    >Connect on</span
+                                >
+                                <span class="font-medium">LinkedIn</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div
+                        class="mt-16 pt-8 border-t border-gray-800 text-sm text-gray-500"
+                    >
+                        <p>
+                            &copy; 2024 Federico Ferrulli. All rights reserved.
+                        </p>
+                        <p class="mt-2 text-xs">
+                            Built with Vue.js & Tailwind CSS
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Vue Logic -->
+        <script>
+            const { createApp, ref, onMounted } = Vue;
+
+            createApp({
+                setup() {
+                    const isDark = ref(false);
+                    const mobileMenuOpen = ref(false);
+
+                    const cvData = {
+                        name: "Federico Ferrulli",
+                        role: "Software Developer",
+                        email: "federico.ferrulli01@gmail.com",
+                        social: {
+                            linkedin:
+                                "https://linkedin.com/in/federico-ferrulli",
+                            github: "#",
+                        },
+                        skills: {
+                            backend: ["NodeJS", "ExpressJS", "PHP", "Slim"],
+                            frontend: [
+                                "VueJS",
+                                "PiniaJS",
+                                "JavaScript",
+                                "HTML/CSS",
+                            ],
+                            database: [
+                                "MongoDB",
+                                "MySQL",
+                                "PostgreSQL",
+                                "Mongoose",
+                            ],
+                            tools: [
+                                "Linux Shell",
+                                "Apache",
+                                "Git",
+                                "REST APIs",
+                            ],
+                        },
+                        experience: [
+                            {
+                                role: "Jr. Software Developer",
+                                company: "Sysman Progetti & Servizi",
+                                period: "Set 2022 - Presente",
+                                tasks: [
+                                    "Guidato e gestito un team di sviluppo, interagendo con clienti per definire obiettivi.",
+                                    "Sviluppato backend complessi con integrazioni IoT.",
+                                    "Ottimizzazione del codice per migliorare sicurezza e stabilità.",
+                                    "Implementazione di nuove funzionalità software custom.",
+                                ],
+                            },
+                            {
+                                role: "Jr. Software Developer",
+                                company: "UMANA S.p.A.",
+                                period: "Mar 2022 - Set 2022",
+                                tasks: [
+                                    "Implementazione funzionalità e risoluzione bug in team.",
+                                    "Formazione intensiva e consolidamento competenze tecniche.",
+                                    "Collaborazione in ambiente agile.",
+                                ],
+                            },
+                            {
+                                role: "Map Creator Specialist",
+                                company: "Here Maps (Stage)",
+                                period: "2018 - 2019",
+                                tasks: [
+                                    "Aggiornamento database cartografici WebGIS.",
+                                    "Analisi e modifica attributi mappe tramite Map Creator.",
+                                    "Comprensione criteri costruzione database geospaziali.",
+                                ],
+                            },
+                        ],
+                    };
+
+                    const navItems = [
+                        { name: "Home", href: "#home" },
+                        { name: "Skills", href: "#skills" },
+                        { name: "Esperienza", href: "#experience" },
+                        { name: "Contatti", href: "#contact" },
+                    ];
+
+                    const toggleTheme = () => {
+                        isDark.value = !isDark.value;
+                        if (isDark.value) {
+                            document.documentElement.classList.add("dark");
+                        } else {
+                            document.documentElement.classList.remove("dark");
+                        }
+                    };
+
+                    // Check system preference
+                    onMounted(() => {
+                        if (
+                            window.matchMedia &&
+                            window.matchMedia("(prefers-color-scheme: dark)")
+                                .matches
+                        ) {
+                            isDark.value = true;
+                            document.documentElement.classList.add("dark");
+                        }
+                        // Initialize Icons
+                        lucide.createIcons();
+                    });
+
+                    return {
+                        cvData,
+                        navItems,
+                        isDark,
+                        toggleTheme,
+                        mobileMenuOpen,
+                    };
+                },
+            }).mount("#app");
+        </script>
+    </body>
+</html>
