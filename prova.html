@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federico Ferrulli - Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Scrollbar per un look più pulito */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1f20; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #444746; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5f6368; 
+        }
+
+        /* Animazioni */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-[#131314] text-white font-sans overflow-hidden h-screen flex">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 bg-[#1e1f20] transition-all duration-300 flex flex-col border-r border-gray-800 overflow-hidden shrink-0">
+        <div class="p-4">
+            <button onclick="resetChat()" class="flex items-center gap-3 bg-[#131314] hover:bg-[#2d2e2f] text-gray-300 px-4 py-3 rounded-full w-full transition-colors text-sm font-medium border border-transparent hover:border-gray-700">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Nuova chat
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-2">
+            <div class="px-3 py-2 text-xs font-medium text-gray-400">Recenti</div>
+            <div class="space-y-1">
+                <button class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:bg-[#2d2e2f] rounded-lg truncate text-left">
+                    <i data-lucide="message-square" class="w-4 h-4 shrink-0"></i>
+                    Analisi CV Sysman
+                </button>
+                <button class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:bg-[#2d2e2f] rounded-lg truncate text-left">
+                    <i data-lucide="code" class="w-4 h-4 shrink-0"></i>
+                    Progetti VueJS
+                </button>
+                <button class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:bg-[#2d2e2f] rounded-lg truncate text-left">
+                    <i data-lucide="history" class="w-4 h-4 shrink-0"></i>
+                    Esperienza Here Maps
+                </button>
+            </div>
+        </div>
+
+        <div class="p-2 mt-auto border-t border-gray-800">
+            <button class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:bg-[#2d2e2f] rounded-lg text-left">
+                <i data-lucide="help-circle" class="w-4 h-4"></i>
+                Aiuto
+            </button>
+            <button class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:bg-[#2d2e2f] rounded-lg text-left">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                Impostazioni
+            </button>
+            <div class="flex items-center gap-3 mt-2 px-3 py-2 hover:bg-[#2d2e2f] rounded-lg cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">FF</div>
+                <div class="flex flex-col overflow-hidden">
+                    <span class="text-sm font-medium truncate">Adelfia, IT</span>
+                    <span class="text-xs text-blue-400">Standard</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col relative h-full min-w-0">
+        <!-- Header -->
+        <div class="h-16 flex items-center justify-between px-4 shrink-0 z-10">
+            <button onclick="toggleSidebar()" class="p-2 hover:bg-[#2d2e2f] rounded-full text-gray-400 transition-colors">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            <span class="text-gray-300 font-medium select-none">Federico 2.0 Flash</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center font-bold text-xs shadow-lg">
+                FF
+            </div>
+        </div>
+
+        <!-- Scrollable Area -->
+        <div id="chat-scroller" class="flex-1 overflow-y-auto px-4 pb-32 flex flex-col items-center w-full">
+            
+            <!-- Welcome Screen (Initial State) -->
+            <div id="welcome-screen" class="w-full max-w-4xl mt-12 md:mt-24 fade-in transition-opacity duration-300">
+                <div class="mb-12 pl-2">
+                    <h1 class="text-4xl md:text-6xl font-medium tracking-tight bg-gradient-to-r from-blue-400 via-purple-400 to-red-400 bg-clip-text text-transparent mb-2 pb-2">
+                        Ciao, sono Federico
+                    </h1>
+                    <h2 class="text-4xl md:text-6xl font-medium text-[#444746]">
+                        Come posso aiutarti oggi?
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+                    <!-- Cards -->
+                    <button onclick="handleSendMessage('Quali sono le tue Skills tecniche?')" class="flex flex-col gap-2 bg-[#1e1f20] hover:bg-[#2d2e2f] p-4 rounded-xl transition-colors text-left border border-transparent hover:border-gray-600 group h-36 justify-between">
+                        <div class="p-2 bg-gray-800 rounded-full w-fit group-hover:bg-blue-900/30 transition-colors">
+                            <i data-lucide="code" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <span class="text-gray-200 text-sm font-medium">Mostrami le competenze tecniche</span>
+                    </button>
+
+                    <button onclick="handleSendMessage('Parlami della tua Esperienza lavorativa.')" class="flex flex-col gap-2 bg-[#1e1f20] hover:bg-[#2d2e2f] p-4 rounded-xl transition-colors text-left border border-transparent hover:border-gray-600 group h-36 justify-between">
+                        <div class="p-2 bg-gray-800 rounded-full w-fit group-hover:bg-blue-900/30 transition-colors">
+                            <i data-lucide="briefcase" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <span class="text-gray-200 text-sm font-medium">Esplora le esperienze lavorative</span>
+                    </button>
+
+                    <button onclick="handleSendMessage('Qual è la tua Formazione?')" class="flex flex-col gap-2 bg-[#1e1f20] hover:bg-[#2d2e2f] p-4 rounded-xl transition-colors text-left border border-transparent hover:border-gray-600 group h-36 justify-between">
+                        <div class="p-2 bg-gray-800 rounded-full w-fit group-hover:bg-blue-900/30 transition-colors">
+                            <i data-lucide="graduation-cap" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <span class="text-gray-200 text-sm font-medium">Visualizza percorso di studi</span>
+                    </button>
+
+                    <button onclick="handleSendMessage('Chi sei e come posso Contattarti?')" class="flex flex-col gap-2 bg-[#1e1f20] hover:bg-[#2d2e2f] p-4 rounded-xl transition-colors text-left border border-transparent hover:border-gray-600 group h-36 justify-between">
+                        <div class="p-2 bg-gray-800 rounded-full w-fit group-hover:bg-blue-900/30 transition-colors">
+                            <i data-lucide="user" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <span class="text-gray-200 text-sm font-medium">Chi sono & Contatti</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Container (Hidden initially) -->
+            <div id="chat-container" class="w-full max-w-3xl pt-8 space-y-8 hidden">
+                <!-- Messages will be injected here -->
+            </div>
+            
+            <!-- Spacer for bottom input -->
+            <div class="h-12"></div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="absolute bottom-0 left-0 w-full bg-[#131314] p-4 flex flex-col items-center justify-center shrink-0 z-20">
+            <div class="w-full max-w-3xl bg-[#1e1f20] rounded-full flex items-center px-4 py-3 border border-gray-700 focus-within:bg-[#2d2e2f] focus-within:border-gray-500 transition-colors shadow-lg">
+                <input 
+                    id="user-input"
+                    type="text" 
+                    placeholder="Chiedimi qualcosa sul mio CV..."
+                    class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-400 ml-2"
+                    autocomplete="off"
+                >
+                <button 
+                    id="send-btn"
+                    onclick="handleInputSend()"
+                    class="p-2 rounded-full transition-colors text-gray-500 hover:bg-gray-700 disabled:opacity-50"
+                >
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="mt-2 text-center">
+                <p class="text-[10px] text-gray-500">
+                    Portfolio generato da IA. Le informazioni potrebbero non essere esaustive.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA ---
+        const personalInfo = {
+            name: "Federico Ferrulli",
+            role: "Jr. Software Developer",
+            location: "Adelfia, Bari",
+            email: "federico.ferrulli01@gmail.com",
+            about: "Sviluppatore software junior con solide competenze in Javascript, NodeJS e VueJS. Appassionato di backend, IoT e ottimizzazione software. Ambisco a lavorare in contesti sfidanti e innovativi."
+        };
+
+        const skills = [
+            "Javascript", "NodeJS", "ExpressJS", "MongoDB", "Mongoose", 
+            "MySQL", "PostgreSQL", "Sequelize", "HTML", "CSS", 
+            "VueJS", "PiniaJS", "PHP", "Slim", "Apache", "Shell Linux"
+        ];
+
+        const experiences = [
+            {
+                role: "Jr. Software Developer",
+                company: "Sysman Progetti & Servizi S.r.l.",
+                period: "Settembre 2022 - Presente",
+                desc: [
+                    "Sviluppo e implementazione nuove funzionalità software.",
+                    "Manutenzione, correzione bug e ottimizzazione del codice.",
+                    "Guida e gestione team con interazione diretta col cliente.",
+                    "Sviluppo backend di sistemi complessi e integrazioni IoT."
+                ]
+            },
+            {
+                role: "Jr. Software Developer",
+                company: "UMANA S.p.A. (Sysman)",
+                period: "Marzo 2022 - Settembre 2022",
+                desc: [
+                    "Implementazione funzionalità e bug fixing in team.",
+                    "Formazione e mentorship continua su sviluppo software."
+                ]
+            },
+            {
+                role: "Alternanza Scuola-Lavoro",
+                company: "Here Maps",
+                period: "2018 - 2019",
+                desc: [
+                    "Modifica attributi cartografici e utilizzo Map Creator.",
+                    "Contributo alla realizzazione prodotto WebGIS."
+                ]
+            }
+        ];
+
+        const education = {
+            school: "IISS G. Marconi M.Hack",
+            degree: "Perito informatico",
+            grade: "100/100",
+            year: "2021"
+        };
+
+        // --- STATE & DOM ELEMENTS ---
+        const sidebar = document.getElementById('sidebar');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const chatContainer = document.getElementById('chat-container');
+        const chatScroller = document.getElementById('chat-scroller');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        let isSidebarOpen = true;
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- FUNCTIONS ---
+
+        function toggleSidebar() {
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('w-0');
+                sidebar.classList.add('w-64');
+            } else {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-0');
+            }
+        }
+
+        function resetChat() {
+            chatContainer.innerHTML = '';
+            chatContainer.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            welcomeScreen.style.display = 'block'; // Ensure it's visible
+            userInput.value = '';
+        }
+
+        function scrollToBottom() {
+            chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
+        }
+
+        function handleInputSend() {
+            const text = userInput.value.trim();
+            if (text) {
+                handleSendMessage(text);
+                userInput.value = '';
+                updateSendButtonState();
+            }
+        }
+
+        function updateSendButtonState() {
+            if (userInput.value.trim()) {
+                sendBtn.classList.add('text-blue-400');
+                sendBtn.classList.remove('text-gray-500', 'cursor-not-allowed');
+            } else {
+                sendBtn.classList.remove('text-blue-400');
+                sendBtn.classList.add('text-gray-500');
+            }
+        }
+
+        // Event Listeners for Input
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleInputSend();
+        });
+        userInput.addEventListener('input', updateSendButtonState);
+
+
+        function handleSendMessage(text) {
+            // 1. Hide Welcome Screen if visible
+            if (!welcomeScreen.classList.contains('hidden')) {
+                welcomeScreen.classList.add('hidden');
+                welcomeScreen.style.display = 'none'; // Force hide
+                chatContainer.classList.remove('hidden');
+            }
+
+            // 2. Add User Message
+            appendMessage(text, 'user');
+
+            // 3. Simulate Bot "Thinking"
+            showLoadingIndicator();
+
+            // 4. Generate Response after delay
+            setTimeout(() => {
+                removeLoadingIndicator();
+                const responseHTML = generateResponse(text);
+                appendMessage(responseHTML, 'bot', true); // true = isHTML
+            }, 600 + Math.random() * 400); // Random delay 600-1000ms
+        }
+
+        function appendMessage(content, type, isHTML = false) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex gap-4 fade-in ${type === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            let avatarHTML = '';
+            if (type === 'bot') {
+                avatarHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shrink-0 mt-1 shadow-lg">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                    </div>
+                `;
+            }
+
+            let contentHTML = '';
+            if (type === 'user') {
+                contentHTML = `
+                    <div class="bg-[#2d2e2f] rounded-2xl rounded-tr-sm px-5 py-3 max-w-[80%] text-gray-100">
+                        <p>${content}</p>
+                    </div>
+                `;
+            } else {
+                contentHTML = `
+                    <div class="max-w-[85%] text-gray-100 leading-relaxed overflow-hidden">
+                        ${content}
+                    </div>
+                `;
+            }
+
+            msgDiv.innerHTML = type === 'user' ? (contentHTML + avatarHTML) : (avatarHTML + contentHTML);
+            chatContainer.appendChild(msgDiv);
+            
+            // Re-render icons for new elements
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        function showLoadingIndicator() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading-indicator';
+            loadingDiv.className = 'flex gap-4 fade-in justify-start';
+            loadingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shrink-0 mt-1 animate-pulse">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                </div>
+                <div class="bg-[#2d2e2f] rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1 h-10 mt-1">
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                </div>
+            `;
+            chatContainer.appendChild(loadingDiv);
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        function removeLoadingIndicator() {
+            const loader = document.getElementById('loading-indicator');
+            if (loader) loader.remove();
+        }
+
+        function generateResponse(text) {
+            const lowerText = text.toLowerCase();
+            let html = '';
+
+            if (lowerText.includes("skills") || lowerText.includes("competenze") || lowerText.includes("tecniche")) {
+                html = `
+                    <div class="space-y-4">
+                        <p class="text-gray-300 mb-2">Ecco le mie principali competenze tecniche:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${skills.map(skill => `<span class="px-3 py-1 bg-[#1e1f20] border border-gray-700 rounded-full text-sm text-blue-200 hover:border-blue-500 transition-colors cursor-default">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (lowerText.includes("esperienza") || lowerText.includes("lavoro")) {
+                html = `
+                    <div class="space-y-6">
+                        <p class="text-gray-300">Il mio percorso professionale:</p>
+                        ${experiences.map(exp => `
+                            <div class="bg-[#1e1f20] p-4 rounded-xl border border-gray-700 hover:border-gray-600 transition-colors">
+                                <h3 class="font-bold text-lg text-white">${exp.role}</h3>
+                                <div class="text-blue-400 text-sm mb-2">${exp.company} | ${exp.period}</div>
+                                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1 ml-1">
+                                    ${exp.desc.map(d => `<li>${d}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (lowerText.includes("formazione") || lowerText.includes("scuola") || lowerText.includes("studi")) {
+                html = `
+                     <div class="bg-[#1e1f20] p-4 rounded-xl border border-gray-700 inline-block hover:border-gray-600 transition-colors">
+                        <h3 class="font-bold text-lg text-white">${education.school}</h3>
+                        <p class="text-blue-400 font-medium">${education.degree}</p>
+                        <div class="mt-2 text-gray-400 text-sm flex items-center gap-4">
+                            <span><i data-lucide="award" class="inline w-3 h-3 mr-1"></i>Votazione: ${education.grade}</span>
+                            <span><i data-lucide="calendar" class="inline w-3 h-3 mr-1"></i>Anno: ${education.year}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (lowerText.includes("contatto") || lowerText.includes("chi sei") || lowerText.includes("email")) {
+                html = `
+                    <div class="space-y-4">
+                        <p class="text-gray-300 leading-relaxed">${personalInfo.about}</p>
+                        <div class="flex flex-col space-y-3 mt-4 bg-[#1e1f20] p-4 rounded-xl border border-gray-700">
+                            <div class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
+                                <i data-lucide="mail" class="w-5 h-5 text-blue-400"></i> 
+                                <a href="mailto:${personalInfo.email}" class="hover:underline">${personalInfo.email}</a>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-300">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-blue-400"></i> 
+                                <span>${personalInfo.location}</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
+                                <i data-lucide="linkedin" class="w-5 h-5 text-blue-400"></i> 
+                                <span class="text-gray-400">linkedin/in/federico-ferrulli</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html = `<p class="text-gray-300">Sono un portfolio interattivo. Prova a cliccare su uno dei suggerimenti in alto o chiedimi delle mie <b>Skills</b>, <b>Esperienze</b> o <b>Contatti</b>!</p>`;
+            }
+            return html;
+        }
+
+    </script>
+</body>
+</html>
