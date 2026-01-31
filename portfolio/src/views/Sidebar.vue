@@ -9,10 +9,17 @@
                     {{ layoutStore.isSidebarExpanded ? element?.text : '' }}
                 </component>
                 <component v-else-if="layoutStore.isSidebarExpanded" v-bind="element" :is="element.is">
-                    {{ element?.text }}
+                    <span>{{ element?.text }}</span>
+                    <template v-if="element.childrens.length > 0">
+                        <component v-for="child in element.childrens" v-bind="child" :is="child.is">
+                        </component>
+                    </template>
                 </component>
             </div>
         </template>
+        <div class="text-left text-neutral-100">
+            ciao
+        </div>
 
 
     </div>
@@ -21,8 +28,10 @@
 import { reactive } from 'vue'
 import MagicButton from '@/components/MagicButton.vue';
 import { useLayoutStore } from '@/stores/layout';
+import { useLocalChatsStore } from '@/stores/localChats';
 
 const layoutStore = useLayoutStore();
+const chatsStore = useLocalChatsStore();
 
 const ListsSidebar = reactive([
     {
@@ -30,14 +39,15 @@ const ListsSidebar = reactive([
         class: "bg-neutral-800 rounded-full hover:bg-neutral-700 p-3 w-full transition-all duration-300 flex items-center gap-2",
         icon: "add",
         label: "Nuova Chat",
-        fn: function(){
+        fn: function () {
             console.log("ciao")
         }
     },
     {
         is: "div",
         class: "text-neutral-100 mt-2 font-medium",
-        text: "Chat"
+        text: "Chat",
+        childrens: chatsStore.chats
     },
 ])
 
