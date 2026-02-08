@@ -6,7 +6,9 @@ export const useLocalChatsStore = defineStore('localChats', () => {
 
     const chats = reactive([]);
 
-
+    function addChat(){
+        
+    }
 
     return {
         chats
